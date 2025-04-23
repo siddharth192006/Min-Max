@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment-8: Min-Max Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #ff00ff;
+            --bg-dark: #1a1a2e;
+            --text-light: #e0e0e0;
+            --error: #ff4d4d;
+        }
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark), #16213e);
+            color: var(--text-light);
+        }
+        .custom-input {
+            position: relative;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .custom-input input, .custom-input select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, rgba(20, 20, 50, 0.8), rgba(30, 30, 60, 0.8));
+            border-radius: 0.5rem;
+            color: var(--text-light);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .custom-input input:focus, .custom-input select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            outline: none;
+        }
+        [aria-invalid="true"] {
+            border-color: var(--error) !important;
+            box-shadow: 0 0 10px var(--error) !important;
+        }
+        .error-message {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
+            100% { box-shadow: 0 0 30px rgba(0, 242, 255, 0.5); }
+        }
+        button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+        button:hover::before {
+            left: 100%;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+        }
+        .modal-content {
+            background: linear-gradient(45deg, rgba(20, 20, 50, 0.9), rgba(30, 30, 60, 0.9));
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-content button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+        }
+        @media (max-width: 640px) {
+            .custom-input {
+                width: 100%;
+            }
+            .form-container {
+                padding: 1rem;
+            }
+            .modal-content {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="form-container p-8 rounded-lg w-full max-w-md">
+        <h1 class="text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]">Min-Max Form</h1>
+        <form id="minMaxForm" class="space-y-6" novalidate>
+            <!-- Age Input -->
+            <div class="custom-input">
+                <label for="age" class="block text-sm font-medium mb-1">Age</label>
+                <input type="number" id="age" name="age" min="18" max="120" required aria-describedby="age-error">
+                <div id="age-error" class="error-message hidden" role="alert">Please enter an age between 18 and 120.</div>
+            </div>
+
+            <!-- Rating Input -->
+            <div class="custom-input">
+                <label for="rating" class="block text-sm font-medium mb-1">Satisfaction Rating</label>
+                <input type="range" id="rating" name="rating" min="1" max="10" value="1" step="1" required aria-describedby="rating-error">
+                <output for="rating" id="rating-output">1</output>
+                <div id="rating-error" class="error-message hidden" role="alert">Please select a rating between 1 and 10.</div>
+            </div>
+
+            <!-- Event Date -->
+            <div class="custom-input">
+                <label for="event-date" class="block text-sm font-medium mb-1">Event Date</label>
+                <input type="date" id="event-date" name="event-date" min="2025-04-23" max="2025-12-31" required aria-describedby="event-date-error">
+                <div id="event-date-error" class="error-message hidden" role="alert">Please select a date between April 23, 2025, and December 31, 2025.</div>
+            </div>
+
+            <button type="submit" class="w-full text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--bg-dark)]">Submit</button>
+        </form>
+    </div>
+
+    <!-- Thank You Modal -->
+    <div id="thankYouModal" class="modal">
+        <div class="modal-content">
+            <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]">Thank You!</h2>
+            <button id="closeModal" class="bg-[var(--primary)] text-[var(--bg-dark)] hover:bg-[var(--secondary)] focus:ring-2 focus:ring-[var(--primary)]">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Debounce function for performance
+        function debounce(fn, ms) {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fn(...args), ms);
+            };
+        }
+
+        // Initialize form
+        const form = document.getElementById('minMaxForm');
+        const ageInput = document.getElementById('age');
+        const ratingInput = document.getElementById('rating');
+        const ratingOutput = document.getElementById('rating-output');
+        const eventDateInput = document.getElementById('event-date');
+        const modal = document.getElementById('thankYouModal');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        // Update range output
+        ratingInput.addEventListener('input', () => {
+            ratingOutput.textContent = ratingInput.value;
+        });
+
+        // Modal functionality
+        function showModal() {
+            modal.style.display = 'flex';
+            closeModalBtn.focus();
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        modal.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // Form validation
+        const validateForm = debounce(() => {
+            let isValid = true;
+
+            // Age validation
+            const ageError = document.getElementById('age-error');
+            if (!ageInput.value || ageInput.value < 18 || ageInput.value > 120) {
+                ageInput.setAttribute('aria-invalid', 'true');
+                ageError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                ageInput.removeAttribute('aria-invalid');
+                ageError.classList.add('hidden');
+            }
+
+            // Rating validation
+            const ratingError = document.getElementById('rating-error');
+            if (!ratingInput.value || ratingInput.value < 1 || ratingInput.value > 10) {
+                ratingInput.setAttribute('aria-invalid', 'true');
+                ratingError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                ratingInput.removeAttribute('aria-invalid');
+                ratingError.classList.add('hidden');
+            }
+
+            // Event date validation
+            const eventDateError = document.getElementById('event-date-error');
+            if (!eventDateInput.value || eventDateInput.value < '2025-04-23' || eventDateInput.value > '2025-12-31') {
+                eventDateInput.setAttribute('aria-invalid', 'true');
+                eventDateError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                eventDateInput.removeAttribute('aria-invalid');
+                eventDateError.classList.add('hidden');
+            }
+
+            return isValid;
+        }, 300);
+
+        // Event delegation for form inputs
+        form.addEventListener('change', validateForm);
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const isValid = validateForm();
+            if (isValid) {
+                showModal();
+                form.reset();
+                ratingOutput.textContent = '1';
+                document.querySelectorAll('.error-message').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
+            }
+        });
+    </script>
+</body>
+</html>
